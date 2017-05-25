@@ -1,3 +1,52 @@
 """
 Our code for the project fractals in NUMA01
+
+edit
 """
+class fractal2D:
+    
+    def __init__(self,function, derivative):
+        self.function = function
+        self.derivative = derivative
+        self.zeroes = []
+    
+    def __repr__(self):
+        return '{}'.format(self.function)
+    
+    
+    def Newton(self,x0,Tol=1.e-12,Maxit=1000):
+        for n in range(Maxit):
+            x1=x0[0]
+            x2=x0[1]
+            f_1 = self.function[0,0]
+            f_2 = self.function[1,0]
+            fd_11 = self.derivative[0,0]
+            fd_12 = self.derivative[0,1]
+            fd_21 = self.derivative[1,0]
+            fd_22 = self.derivative[1,1]
+            f = array([[f_1(x1,x2)],[f_2(x1,x2)]])
+            f.shape = (2,1)
+            val = abs(f_1(x1,x2))+abs(f_2(x1,x2))
+            J = array([[fd_11(x1,x2),fd_12(x1,x2)],[fd_21(x1,x2),fd_22(x1,x2)]])
+            J.shape = (2,2)
+            Jinv = solve(J,eye(2,2))
+            x = x0 - dot(Jinv,f)
+            x0 = x
+            if val<=Tol:
+                break
+        if n==Maxit-1:
+            raise Exception('Root not found within allowed tolerance/maximum number of iterations')
+        else:
+            return x
+        
+        
+    def findazero(self,x0,tolerance=1.e-10,Tol=1.e-12,Maxit=1000):
+        x = self.Newton(x0)
+        for i in range((len(self.zeroes))):
+            if all(abs(self.zeroes[i]-x))<=tolerance:
+                raise Exception('Zero has already been found')
+            else:
+                continue
+        self.zeroes.append(x)
+        return len(self.zeroes)
+    
