@@ -7,21 +7,6 @@ matrix= array([[2,3,4],[5,6,7]])
 
 def funk(x, y):
     return matrix + matrix
-
-xvalues = np.array([0, 1, 2, 3, 4]);
-yvalues = np.array([0, 1, 2, 3, 4]);
-                  
-
-
-xx, yy = np.meshgrid(np.linspace(0,2*np.pi,100), np.linspace(0,2*np.pi,100))
-
-
-
-
-
-
-
-z = funk(xx, yy) # skapa bilden, ange funktion
-            
-plt.imshow(z, origin='lower', interpolation='none')
+          
+plt.imshow(z, origin='lower', interpolation='none') #z exiterar ej men fungerar, varför?
 plt.show()
