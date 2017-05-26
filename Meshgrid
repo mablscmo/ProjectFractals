@@ -1,0 +1,8 @@
+#Första punkten i uppgift fyra, set up a meshgrid, ser ut som i boken sida 133.
+
+x = np.linspace(0,20,10)         #det är antalet steg på x-axeln (10 stycken, detta kan väljas hur man vill) med start i noll och slut i 20
+y = np.linspace(0,20,10)          #antalet steg på y-axeln samma princip som för x-axeln och vi får en N**2 grid
+X, Y = numpy.meshgrid(x, y)           #vektorer i meshgrid grunden till 'griden'
+plt.plot(X, Y, marker='.', color='k', linestyle='none')  #plotandet av systemet/meshgrid som ska kunna användas vidare för att visualisera t.ex funktioner
+
+
