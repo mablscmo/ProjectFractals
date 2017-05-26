@@ -8,35 +8,53 @@ class fractal2D:
     def __init__(self,function, derivative):
         self.function = function
         self.derivative = derivative
-        self.zeroes = []
+        self.zeroes = array(())
     
     def __repr__(self):
         return '{}'.format(self.function)
+
+        
+    def findazero(self,x0,tolerance=1.e-10,Tol=1.e-12,Maxit=1000):
+        x = self.Newton(x0)
+        for i in range((len(self.zeroes))):
+            if all(abs(self.zeroes[i]-x))<=tolerance:
+                raise Exception('Zero has already been found')
+            else:
+                continue
+        self.zeroes.append(x)
+        return len(self.zeroes)
     
+
     
-    def Newton(self,x0,Tol=1.e-12,Maxit=50):
+    def Newton(self,x0,Maxit=100,Tol=1.e-8):
         f_1, f_2 = self.function[0,0], self.function[1,0]
         for n in range(Maxit):
             x1, x2 = x0[0], x0[1]
-            
             fd_11, fd_12, fd_21, fd_22 = self.derivative[0,0], self.derivative[0,1], self.derivative[1,0], self.derivative[1,1]
             J = array([[fd_11(x1,x2),fd_12(x1,x2)],[fd_21(x1,x2),fd_22(x1,x2)]])
-            J.shape = (2,2)
+            J.shape=(2,2)
             Jinv = solve(J,eye(2,2))
             
             f = array([[f_1(x1,x2)],[f_2(x1,x2)]])
             f.shape = (2,1)
+            
             val = abs(f_1(x1,x2))+abs(f_2(x1,x2))
             
             x = x0 - dot(Jinv,f)
             x0 = x
             
             if val<=Tol:
+                if not any(abs(self.zeroes-x[0])<Tol) and not any(abs(self.zeroes-x[1])<Tol):
+                    if len(self.zeroes)==0:
+                        self.zeroes=array(x)
+                    else:
+                        row_stack((self.zeroes,x))
                 return x
         else:
-            return divergence
-    
-    def simNewton(self,x0,Tol=1.e-12,Maxit=50):
+            return 'divergence'
+
+        
+    def simNewton(self,x0,Maxit=100,Tol=1.e-8):
         x1, x2 = x0[0], x0[1]
         fd_11, fd_12, fd_21, fd_22 = self.derivative[0,0], self.derivative[0,1], self.derivative[1,0], self.derivative[1,1]
         
@@ -59,15 +77,4 @@ class fractal2D:
             if val<=Tol:
                 return x
         else:
-            return divergence
-        
-    def findazero(self,x0,tolerance=1.e-10,Tol=1.e-12,Maxit=1000):
-        x = self.Newton(x0)
-        for i in range((len(self.zeroes))):
-            if all(abs(self.zeroes[i]-x))<=tolerance:
-                raise Exception('Zero has already been found')
-            else:
-                continue
-        self.zeroes.append(x)
-        return len(self.zeroes)
-    
+            return 'divergence'
