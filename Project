@@ -31,7 +31,11 @@ class fractal2D:
     
 
     
-    def Newton(self,x0,Maxit=100,Tol=1.e-8):                                    # Sätter parametrar och argumentet (ett partal koordinater) som behövs för Newtons
+    def Newton(self,x0,Maxit=100,Tol=1.e-8):                                    # Sätter upp Newtons metod
+        """
+        Metod för att hitta rötter i ett tvådimensionellt ekvationssystem av funktioner.
+        Tar ett partal (koordinater) som argument.
+        """
         if isinstance(x0,(list,tuple)):                                         
             x0=array(x0)
         x0.shape=(2,1)                                                          # De tre första raderna ser till så att vårt par av tal kommer i rätt form för funktionen oavsett i vilken form det kommer (list, tuple, eller array, samt rätt form för array)
@@ -62,7 +66,11 @@ class fractal2D:
             return 'divergence'                                                 # Placeholder tills vidare för att Newtons metod inte konvergerade mot någon rot med de parametrar som getts
 
         
-    def simNewton(self,x0,Maxit=100,Tol=1.e-8):                                 # Samma metod som Newton, enda skillnaden är att den Jacobianska matrisen endast beräknas en gång (för användning i områden nära kända rötter)
+    def simNewton(self,x0,Maxit=100,Tol=1.e-8):
+        """
+        Newtons metod där den Jacobianska matrisen endast beräknas en gång.
+        För användning i områden nära känd rot.
+        """
         x1, x2 = x0[0], x0[1]
         fd_11, fd_12, fd_21, fd_22 = self.derivative[0,0], self.derivative[0,1], self.derivative[1,0], self.derivative[1,1]
         
