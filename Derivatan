@@ -10,7 +10,7 @@ class fractal2D:  #här är definitionen av classen till vilken vi lägger till 
         h=1.e-8                     #detta är h:et (uppdelning av differensen) i derivatans definition, som vi vill ha så litet som möjligt för bättre approximation av derivatan 
         f_1 = self.function[0,0]      #här namnges self.function som kommer vara de funktioner vi sätter in och ska derivera
         f_2 = self.function[1,0]     #detta är andra funktionen vi kommer att derivera med avseende på x1 och x2
-        derivatives_matrix = array([[lambda x1, x2: (f_1(x1+h)-f_1(x1))/h, lambda x1, x2: (f_1(x2+h)-f_1(x2))/h],[lambda x1, x2: (f_2(x1+h)-f_2(x1))/h, lambda  x1, x2: (f_2(x2+h)-f_2(x2))/h]])
+        derivatives_matrix = array([[lambda x1, x2: (f_1(x1+h, x2)-f_1(x1, x2))/h, lambda x1, x2: (f_1(x1, x2+h)-f_1(x1, x2))/h],[lambda x1, x2: (f_2(x1+h, x2)-f_2(x1, x2))/h, lambda  x1, x2: (f_2(x1, x2+h)-f_2(x1, x2))/h]])
         if derivative == None:      # med denna bit av kod anger vi för __init__ att om derivatan inte anges från början så ska en approximation användas, och då är output/return derivatives_matrix där approximationen görs med hjälp av
             return derivatives_matrix
 
