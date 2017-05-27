@@ -14,8 +14,7 @@ class fractal2D:
             self.derivative = array([[lambda x1, x2: (f_1(x1+h, x2)-f_1(x1, x2))/h, lambda x1, x2: (f_1(x1, x2+h,)-f_1(x1, x2))/h],[lambda x1, x2: (f_2(x1+h, x2)-f_2(x1, x2))/h, lambda  x1, x2: (f_2(x1, x2+h)-f_2(x1, x2))/h]])        # Ger funktioner för att numerisk uppskatta de partiella derivatorna när variabler ges
         else:
             self.derivative = derivative
-        self.zeroes = array(())                                                 # Ej färdigt än
-    
+        self.zeroes = set()                                                     # Sätter upp set av rötter som fyllls på efter hand som nya rötter hittas    
     def __repr__(self):
         return '{}'.format(self.function)                                       # Ger representation (ej viktigt hur det ser ut)
 
@@ -53,18 +52,14 @@ class fractal2D:
             x0 = x                                                              # Ger värde på koordinater närmre rot enligt Newtons metod
             
             if val<=Tol:                                                        # Kollar om de nya koordinaterna är godtyckligt nära roten
-            
-            
-                if not any(abs(self.zeroes-x[0])<Tol) and not any(abs(self.zeroes-x[1])<Tol):            # Början till att kolla om vi redan har hittat specifik rot och lagra den om ny (ej färdig, behöver inte vara rätt så som det ser ut nu)   
-                    if len(self.zeroes)==0:
-                        self.zeroes=array(x)
-                    else:
-                        row_stack((self.zeroes,x))
+                (x[0,0], x[1,0]) = (round(x[0,0],5),round(x[1,0],5))            # Avrundar koordinaterna för att kunna jämföra med kända rötter (då Newtons metod är en numerisk process och varje ny uppsättning av koordinater kommer ge nytt fel)
+                if (x[0,0],x[1,0]) not in self.zeroes:                          # Kollar om ny rot har hittats
+                   self.zeroes.add((x[0,0],x[1,0]))                             # Lägger till i kända rötter om ny
                         
                         
                 return x                                                        # Ger oss tillbaka värdet på koordinater för hittad rot
         else:
-            return 'divergence'                                                 # Placeholder för att Newtons metod inte konvergerade mot någon rot med de parametrar som getts
+            return 'divergence'                                                 # Placeholder tills vidare för att Newtons metod inte konvergerade mot någon rot med de parametrar som getts
 
         
     def simNewton(self,x0,Maxit=100,Tol=1.e-8):                                 # Samma metod som Newton, enda skillnaden är att den Jacobianska matrisen endast beräknas en gång (för användning i områden nära kända rötter)
