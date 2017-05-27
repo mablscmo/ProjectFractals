@@ -7,7 +7,7 @@ class fractal2D:
     
     def __init__(self,function, derivative=None):                               # Sätter upp klassen med två stycken funktioner (polynom i vårt fall) beroende på två variabler, och de fyra resulterande partiella derivatorna
         self.function = function
-        if derivative==None:                                                    # Kollar om de partiella derivatorna har getts
+        if derivative is None:                                                    # Kollar om de partiella derivatorna har getts
             f_1 = function[0,0]                                                 
             f_2 = function[1,0]                                                 # Ger namn till funktionerna för användning
             h=1.e-8
