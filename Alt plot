@@ -1,0 +1,12 @@
+import pylab as plt
+Colors = {'red': ((0.0, 1.0, 0.0), # Att göra: definiera färger till noll ställena och allt däremellan
+                 (1.0, 0.0, 0.0)),
+         'green': ((0.0, 0.0, 0.0),
+                   (1.0, 1.0, 1.0)),
+         'blue': ((0.0, 1.0, 1.0),
+                  (1.0, 0.0, 1.0))}
+
+my_cmap = plt.matplotlib.colors.LinearSegmentedColormap('my_colormap',Colors,256) # kontroll över färgschemat
+plt.pcolor(plt.rand(200,200),cmap=my_cmap)  # Att göra: Byta rand mot relevant data 
+plt.colorbar()
+plt.show()
