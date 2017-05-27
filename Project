@@ -5,22 +5,22 @@ edit
 """
 class fractal2D:
     
-    def __init__(self,function, derivative=None):
+    def __init__(self,function, derivative=None):                               # Sätter upp klassen med två stycken funktioner (polynom i vårt fall) beroende på två variabler, och de fyra resulterande partiella derivatorna
         self.function = function
-        if derivative==None:
-            f_1 = function[0,0]
-            f_2 = function[1,0]
+        if derivative==None:                                                    # Kollar om de partiella derivatorna har getts
+            f_1 = function[0,0]                                                 
+            f_2 = function[1,0]                                                 # Ger namn till funktionerna för användning
             h=1.e-8
-            derivatives_matrix = array([[lambda x1, x2: (f_1(x1+h, x2)-f_1(x1, x2))/h, lambda x1, x2: (f_1(x1, x2+h,)-f_1(x1, x2))/h],[lambda x1, x2: (f_2(x1+h, x2)-f_2(x1, x2))/h, lambda  x1, x2: (f_2(x1, x2+h)-f_2(x1, x2))/h]])
+            self.derivative = array([[lambda x1, x2: (f_1(x1+h, x2)-f_1(x1, x2))/h, lambda x1, x2: (f_1(x1, x2+h,)-f_1(x1, x2))/h],[lambda x1, x2: (f_2(x1+h, x2)-f_2(x1, x2))/h, lambda  x1, x2: (f_2(x1, x2+h)-f_2(x1, x2))/h]])        # Ger funktioner för att numerisk uppskatta de partiella derivatorna när variabler ges
         else:
             self.derivative = derivative
-        self.zeroes = array(())
+        self.zeroes = array(())                                                 # Ej färdigt än
     
     def __repr__(self):
-        return '{}'.format(self.function)
+        return '{}'.format(self.function)                                       # Ger representation (ej viktigt hur det ser ut)
 
         
-    def findazero(self,x0,tolerance=1.e-10,Tol=1.e-12,Maxit=1000):
+    def findazero(self,x0,tolerance=1.e-10,Tol=1.e-12,Maxit=1000):              # (Onödigt? Vi ska hitta och spara nollorna när vi använder Newtons)
         x = self.Newton(x0)
         for i in range((len(self.zeroes))):
             if all(abs(self.zeroes[i]-x))<=tolerance:
@@ -32,44 +32,49 @@ class fractal2D:
     
 
     
-    def Newton(self,x0,Maxit=100,Tol=1.e-8):
-        if isinstance(x0,(list,tuple)):
+    def Newton(self,x0,Maxit=100,Tol=1.e-8):                                    # Sätter parametrar och argumentet (ett partal koordinater) som behövs för Newtons
+        if isinstance(x0,(list,tuple)):                                         
             x0=array(x0)
-        x0.shape=(2,1)
-        f_1, f_2 = self.function[0,0], self.function[1,0]
+        x0.shape=(2,1)                                                          # De tre första raderna ser till så att vårt par av tal kommer i rätt form för funktionen oavsett i vilken form det kommer (list, tuple, eller array, samt rätt form för array)
+        f_1, f_2 = self.function[0,0], self.function[1,0]                       # Ger namn till funktionerna för användning
+        fd_11, fd_12, fd_21, fd_22 = self.derivative[0,0], self.derivative[0,1], self.derivative[1,0], self.derivative[1,1]         # Samma för de partiella derivatorna
         for n in range(Maxit):
-            x1, x2 = x0[0], x0[1]
-            fd_11, fd_12, fd_21, fd_22 = self.derivative[0,0], self.derivative[0,1], self.derivative[1,0], self.derivative[1,1]
-            J = array([[fd_11(x1,x2),fd_12(x1,x2)],[fd_21(x1,x2),fd_22(x1,x2)]])
-            J.shape=(2,2)
-            Jinv = solve(J,eye(2,2))
+            x1, x2 = x0[0], x0[1]                                               # Gör de givna koordinaterna till egna variabler
+            J = array([[fd_11(x1,x2),fd_12(x1,x2)],[fd_21(x1,x2),fd_22(x1,x2)]])        # Ger den Jacobianska matrisen för funktionen utvärderat i koordinaterna
+            J.shape=(2,2)                                                       # Ger matrisen rätt form (varför behövs det?)
+            Jinv = solve(J,eye(2,2))                                            # Hittar inversen
             
-            f = array([[f_1(x1,x2)],[f_2(x1,x2)]])
-            f.shape = (2,1)
+            f = array([[f_1(x1,x2)],[f_2(x1,x2)]])                              # Skapar en matris av koordinaterna utvärderade i funktionerna
+            f.shape = (2,1)                                                     # Ger matrisen rätt form (varför behövs det?)
             
-            val = abs(f_1(x1,x2))+abs(f_2(x1,x2))
+            val = abs(f_1(x1,x2))+abs(f_2(x1,x2))                               # Utvärderar koordinaterna i funktionen för senare jämförelse
             
-            x = x0 - dot(Jinv,f)
-            x0 = x
+            x = x0 - dot(Jinv,f)                                                
+            x0 = x                                                              # Ger värde på koordinater närmre rot enligt Newtons metod
             
-            if val<=Tol:
-                if not any(abs(self.zeroes-x[0])<Tol) and not any(abs(self.zeroes-x[1])<Tol):
+            if val<=Tol:                                                        # Kollar om de nya koordinaterna är godtyckligt nära roten
+            
+            
+                if not any(abs(self.zeroes-x[0])<Tol) and not any(abs(self.zeroes-x[1])<Tol):            # Början till att kolla om vi redan har hittat specifik rot och lagra den om ny (ej färdig, behöver inte vara rätt så som det ser ut nu)   
                     if len(self.zeroes)==0:
                         self.zeroes=array(x)
                     else:
                         row_stack((self.zeroes,x))
-                return x
+                        
+                        
+                return x                                                        # Ger oss tillbaka värdet på koordinater för hittad rot
         else:
-            return 'divergence'
+            return 'divergence'                                                 # Placeholder för att Newtons metod inte konvergerade mot någon rot med de parametrar som getts
 
         
-    def simNewton(self,x0,Maxit=100,Tol=1.e-8):
+    def simNewton(self,x0,Maxit=100,Tol=1.e-8):                                 # Samma metod som Newton, enda skillnaden är att den Jacobianska matrisen endast beräknas en gång (för användning i områden nära kända rötter)
         x1, x2 = x0[0], x0[1]
         fd_11, fd_12, fd_21, fd_22 = self.derivative[0,0], self.derivative[0,1], self.derivative[1,0], self.derivative[1,1]
         
         J = array([[fd_11(x1,x2),fd_12(x1,x2)],[fd_21(x1,x2),fd_22(x1,x2)]])
         J.shape = (2,2)
         Jinv = solve(J,eye(2,2))
+        
         f_1, f_2 = self.function[0,0], self.function[1,0]
         
         for n in range(Maxit):
