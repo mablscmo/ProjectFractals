@@ -4,6 +4,7 @@ Our code for the project fractals in NUMA01
 edit
 """
 class fractal2D:
+
     
     def __init__(self,function, derivative=None):                               # Sätter upp klassen med två stycken funktioner (polynom i vårt fall) beroende på två variabler, och de fyra resulterande partiella derivatorna
         self.function = function
@@ -133,6 +134,14 @@ u_22 = lambda x1,x2: 3*x1**2-3*x2**2
 
 ufun = array([[u_1],[u_2]])
 uder = array([[u_11,u_12],[u_21,u_22]])
+
+
+Colors = {'red': ((0.0, 1.0, 0.0),
+                (1.0, 0.0, 0.0)),
+         'green': ((0.0, 0.0, 0.0),
+                   (1.0, 1.0, 1.0)),
+         'blue': ((0.0, 1.0, 1.0),
+                  (1.0, 0.0, 1.0))}
 
 
 
