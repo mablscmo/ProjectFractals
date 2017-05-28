@@ -115,12 +115,12 @@ class fractal2D:
                 for j in range(N):
                     A[i,j]=self.Newton((X[i,j],Y[i,j]))
 
-             plt.xlabel('x', fontsize=18,color ='C2')
+            plt.xlabel('x', fontsize=18,color ='C2')
             plt.ylabel('y', fontsize=16,color = 'C2',rotation = 0)
             plt.pcolor(A,cmap='jet')
             plt.colorbar()
             plt.plot() 
-            plt.title('Fraktal')
+            plt.title('Fractal')
             ax = plt.gca()
             L1=[]
             L2=[]
