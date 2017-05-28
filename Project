@@ -1,3 +1,7 @@
+"""
+Our code for the project fractals in NUMA01
+"""
+
 import numpy as np
 from scipy import *
 import matplotlib.pyplot as plt
