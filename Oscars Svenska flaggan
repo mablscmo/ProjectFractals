@@ -1,0 +1,38 @@
+
+import numpy as np
+from scipy import *
+import matplotlib.pyplot as plt
+
+import pylab as plt
+Colors = {'red': ((0.0, 1.0, 0.0),
+                 (1.0, 1.0, 1.0)),
+         'green': ((0.0, 0.0, 0.0),
+                   (1.0, 1.0, 1.0)),
+         'blue': ((0.0, 1.0, 1.0),
+                  (1.0, 0.0, 1.0))}
+
+
+
+
+a = np.array([0, 1, 0, 0])
+
+b = np.array([1, 1, 1, 1])
+
+c = np.array([0, 1, 0, 0])
+
+
+
+
+matrix=np.stack((a, b, c))
+
+
+
+#np.stack((a, b), axis=-1)
+#array([[1, 2, 3],
+#       [2, 3, 4],
+#       [3, 4, 5]])
+
+my_cmap = plt.matplotlib.colors.LinearSegmentedColormap('my_colormap',Colors,256)
+plt.pcolor(matrix,cmap=my_cmap)
+plt.colorbar()
+plt.show() 
