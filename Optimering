@@ -15,7 +15,7 @@ class fractal2D:
         else:
             self.derivative = derivative
         self.zeroes = {'divergence':0}    
-        self.distance = []                                                # Sätter upp set av rötter som fyllls på efter hand som nya rötter hittas    
+        self.distance = []                    #(lista för optimering)                            # Sätter upp set av rötter som fyllls på efter hand som nya rötter hittas    
     def __repr__(self):
         return '{}'.format(self.function)                                       # Ger representation (ej viktigt hur det ser ut)
         
@@ -52,7 +52,7 @@ class fractal2D:
                 (x[0], x[1]) = (round(x[0],5),round(x[1],5))            # Avrundar koordinaterna för att kunna jämföra med kända rötter (då Newtons metod är en numerisk process och varje ny uppsättning av koordinater kommer ge nytt fel)
                 if '{},{}'.format(x[0],x[1]) not in self.zeroes.keys():                          # Kollar om ny rot har hittats
                    self.zeroes['{},{}'.format(x[0],x[1])] = len(self.zeroes)                             # Lägger till i kända rötter om ny
-                   self.distance.append(x0[0]/x0[1])  
+                   self.distance.append(x0[0]/x0[1])                     #(optimering) 
                         
                 return self.zeroes['{},{}'.format(x[0],x[1])]                                                  # Ger oss tillbaka värdet på koordinater för hittad rot
         else:
@@ -106,14 +106,14 @@ class fractal2D:
             Tol = 0.5
             for i in range(N):
                 for j in range(N):
-                    for k in self.distance:
+                    for k in self.distance:                                                   #(Optimering från rad 109 till 113)
                         if abs(X[i,j] - Y[i,j]/k)>Tol:
                             A[i,j]=self.simNewton((X[i,j],Y[i,j]))
                     else:
                         A[i,j]=self.Newton((X[i,j],Y[i,j]))
                         
-            import timeit
-            timeit.timeit(plt.pcolor(A,cmap='jet'))
+            
+            plt.pcolor(A,cmap='jet')
             plt.colorbar()
             plt.show()
 
