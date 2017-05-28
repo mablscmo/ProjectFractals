@@ -82,7 +82,7 @@ class fractal2D:
         Jinv = solve(J,eye(2,2))
         
         f_1, f_2 = self.function[0,0], self.function[1,0]
-        
+
         for n in range(Maxit):
             x1, x2 = x0[0], x0[1]
             
@@ -98,11 +98,14 @@ class fractal2D:
                 return self.zeroes['{},{}'.format(x[0],x[1])] 
         else:
             return self.zeroes['divergence']
-            """
-        def plot(N, a, b, c, d):
+            
+        
+    def plot(self, N, a, b, c, d):
             x=linspace(a,b,N)
             y=linspace(c,d,N)
             X,Y=meshgrid(x,y)
+            A=zeros((N,N))
             for i in range(N):
                 for j in range(N):
-                   """ 
+                    A[i,j]=self.Newton((X[j,i],Y[j,i]))
+            return A
