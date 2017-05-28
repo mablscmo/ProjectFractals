@@ -14,7 +14,7 @@ class fractal2D:
             self.derivative = array([[lambda x1, x2: (f_1(x1+h, x2)-f_1(x1, x2))/h, lambda x1, x2: (f_1(x1, x2+h,)-f_1(x1, x2))/h],[lambda x1, x2: (f_2(x1+h, x2)-f_2(x1, x2))/h, lambda  x1, x2: (f_2(x1, x2+h)-f_2(x1, x2))/h]])        # Ger funktioner för att numerisk uppskatta de partiella derivatorna när variabler ges
         else:
             self.derivative = derivative
-        self.zeroes = set()                                                     # Sätter upp set av rötter som fyllls på efter hand som nya rötter hittas    
+        self.zeroes = {'divergence':0}                                                    # Sätter upp set av rötter som fyllls på efter hand som nya rötter hittas    
     def __repr__(self):
         return '{}'.format(self.function)                                       # Ger representation (ej viktigt hur det ser ut)
 
@@ -36,6 +36,8 @@ class fractal2D:
         Metod för att hitta rötter i ett tvådimensionellt ekvationssystem av funktioner.
         Tar ett partal (koordinater) som argument.
         """
+        if (x0[0],x0[1]) == (0,0):
+            return self.zeroes['divergence']
         if isinstance(x0,(list,tuple)):                                         
             x0=array(x0)
         x0.shape=(2,1)                                                          # De tre första raderna ser till så att vårt par av tal kommer i rätt form för funktionen oavsett i vilken form det kommer (list, tuple, eller array, samt rätt form för array)
@@ -56,14 +58,15 @@ class fractal2D:
             x0 = x                                                              # Ger värde på koordinater närmre rot enligt Newtons metod
             
             if val<=Tol:                                                        # Kollar om de nya koordinaterna är godtyckligt nära roten
-                (x[0,0], x[1,0]) = (round(x[0,0],5),round(x[1,0],5))            # Avrundar koordinaterna för att kunna jämföra med kända rötter (då Newtons metod är en numerisk process och varje ny uppsättning av koordinater kommer ge nytt fel)
-                if (x[0,0],x[1,0]) not in self.zeroes:                          # Kollar om ny rot har hittats
-                   self.zeroes.add((x[0,0],x[1,0]))                             # Lägger till i kända rötter om ny
+                x.shape=(2,)
+                (x[0], x[1]) = (round(x[0],5),round(x[1],5))            # Avrundar koordinaterna för att kunna jämföra med kända rötter (då Newtons metod är en numerisk process och varje ny uppsättning av koordinater kommer ge nytt fel)
+                if '{},{}'.format(x[0],x[1]) not in self.zeroes.keys():                          # Kollar om ny rot har hittats
+                   self.zeroes['{},{}'.format(x[0],x[1])] = len(self.zeroes)                             # Lägger till i kända rötter om ny
                         
                         
-                return x                                                        # Ger oss tillbaka värdet på koordinater för hittad rot
+                return self.zeroes['{},{}'.format(x[0],x[1])]                                                  # Ger oss tillbaka värdet på koordinater för hittad rot
         else:
-            return 'divergence'                                                 # Placeholder tills vidare för att Newtons metod inte konvergerade mot någon rot med de parametrar som getts
+            return self.zeroes['divergence']                                                 # Placeholder tills vidare för att Newtons metod inte konvergerade mot någon rot med de parametrar som getts
 
         
     def simNewton(self,x0,Maxit=100,Tol=1.e-8):
@@ -92,6 +95,14 @@ class fractal2D:
             x0 = x
             
             if val<=Tol:
-                return x
+                return self.zeroes['{},{}'.format(x[0],x[1])] 
         else:
-            return 'divergence'
+            return self.zeroes['divergence']
+            """
+        def plot(N, a, b, c, d):
+            x=linspace(a,b,N)
+            y=linspace(c,d,N)
+            X,Y=meshgrid(x,y)
+            for i in range(N):
+                for j in range(N):
+                   """ 
