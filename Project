@@ -114,7 +114,7 @@ class fractal2D:
             for i in range(N):
                 for j in range(N):
                     if any(self.root_dist(X[i,j],Y[i,j]) <= tol):
-                        A[j,i]=self.simNewton((X[i,j],Y[i,j]))
+                        A[i,j]=self.simNewton((X[i,j],Y[i,j]))
                     else:
                         A[i,j]=self.Newton((X[i,j],Y[i,j]))
 
