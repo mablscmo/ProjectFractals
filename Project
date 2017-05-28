@@ -21,23 +21,21 @@ class fractal2D:
         else:
             self.derivative = derivative
         self.zeroes = {'divergence':0}                                                    # Sätter upp set av rötter som fyllls på efter hand som nya rötter hittas    
+        self.root_coord = []
     def __repr__(self):
         return '{}'.format(self.function)                                       # Ger representation (ej viktigt hur det ser ut)
-
         
-    def findazero(self,x0,tolerance=1.e-10,Tol=1.e-12,Maxit=1000):              # (Onödigt? Vi ska hitta och spara nollorna när vi använder Newtons)
-        x = self.Newton(x0)
-        for i in range((len(self.zeroes))):
-            if all(abs(self.zeroes[i]-x))<=tolerance:
-                raise Exception('Zero has already been found')
-            else:
-                continue
-        self.zeroes.append(x)
-        return len(self.zeroes)
+        
     
-
+    def root_dist(self,x,y):
+        if len(self.root_coord)==0:
+            return array((10000))
+        dists=zeros(len(self.root_coord),)
+        for i in range(len(self.root_coord)):
+            dists[i]=sqrt((x-self.root_coord[i][0])**2+(y-self.root_coord[i][1])**2)
+        return dists
     
-    def Newton(self,x0,Maxit=100,Tol=1.e-8):                                    # Sätter upp Newtons metod
+    def Newton(self,x0,Maxit=20,Tol=1.e-8):                                    # Sätter upp Newtons metod
         """
         Metod för att hitta rötter i ett tvådimensionellt ekvationssystem av funktioner.
         Tar ett partal (koordinater) som argument.
@@ -68,18 +66,23 @@ class fractal2D:
                 (x[0], x[1]) = (round(x[0],5),round(x[1],5))            # Avrundar koordinaterna för att kunna jämföra med kända rötter (då Newtons metod är en numerisk process och varje ny uppsättning av koordinater kommer ge nytt fel)
                 if '{},{}'.format(x[0],x[1]) not in self.zeroes.keys():                          # Kollar om ny rot har hittats
                    self.zeroes['{},{}'.format(x[0],x[1])] = len(self.zeroes)                             # Lägger till i kända rötter om ny
-                        
+                   self.root_coord.append((x0[0], x0[1]))     
                         
                 return self.zeroes['{},{}'.format(x[0],x[1])]                                                  # Ger oss tillbaka värdet på koordinater för hittad rot
         else:
             return self.zeroes['divergence']                                                 # Placeholder tills vidare för att Newtons metod inte konvergerade mot någon rot med de parametrar som getts
 
         
-    def simNewton(self,x0,Maxit=100,Tol=1.e-8):
+    def simNewton(self,x0,Maxit=20,Tol=1.e-8):
         """
         Newtons metod där den Jacobianska matrisen endast beräknas en gång.
         För användning i områden nära känd rot.
         """
+        if (x0[0],x0[1]) == (0,0):
+            return self.zeroes['divergence']
+        if isinstance(x0,(list,tuple)):                                         
+            x0=array(x0)
+        x0.shape=(2,1)  
         x1, x2 = x0[0], x0[1]
         fd_11, fd_12, fd_21, fd_22 = self.derivative[0,0], self.derivative[0,1], self.derivative[1,0], self.derivative[1,1]
         
@@ -92,7 +95,7 @@ class fractal2D:
         for n in range(Maxit):
             x1, x2 = x0[0], x0[1]
             
-            f = array([[f_1(x1,x2)],[f_2(x1,x2)]])
+            f = array([[f_1(x1,x2)],[f_2(x1,x2)]])                             
             f.shape = (2,1)
             
             val = abs(f_1(x1,x2))+abs(f_2(x1,x2))
@@ -101,6 +104,8 @@ class fractal2D:
             x0 = x
             
             if val<=Tol:
+                x.shape=(2,)
+                (x[0], x[1]) = (round(x[0],5),round(x[1],5)) 
                 return self.zeroes['{},{}'.format(x[0],x[1])] 
         else:
             return self.zeroes['divergence']
@@ -111,10 +116,15 @@ class fractal2D:
             y=linspace(c,d,N)
             X,Y=meshgrid(x,y)
             A=zeros((N,N))
+            tol=10*sqrt((b-a)**2+(d-c)**2)/N
             for i in range(N):
                 for j in range(N):
-                    A[i,j]=self.Newton((X[j,i],Y[j,i]))
+                    if any(self.root_dist(X[i,j],Y[i,j]) <= tol):
+                        A[j,i]=self.simNewton((X[i,j],Y[i,j]))
+                    else:
+                        A[i,j]=self.Newton((X[i,j],Y[i,j]))
             return A
+      
 
             
 u_1 = lambda x1,x2: x1**3-3*x1*x2**2-1
