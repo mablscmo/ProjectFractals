@@ -1,8 +1,10 @@
-"""
-Our code for the project fractals in NUMA01
+import numpy as np
+from scipy import *
+import matplotlib.pyplot as plt
+from pylab import *
+import matplotlib.pyplot as plt
 
-edit
-"""
+
 class fractal2D:
     
     def __init__(self,function, derivative=None):                               # Sätter upp klassen med två stycken funktioner (polynom i vårt fall) beroende på två variabler, och de fyra resulterande partiella derivatorna
@@ -109,3 +111,32 @@ class fractal2D:
                 for j in range(N):
                     A[i,j]=self.Newton((X[j,i],Y[j,i]))
             return A
+
+            
+u_1 = lambda x1,x2: x1**3-3*x1*x2**2-1
+u_2 = lambda x1,x2: 3*x1**2*x2-x2**3
+
+u_11 = lambda x1,x2: 3*x1**2-3*x2**2
+u_12 = lambda x1,x2: 6*x1*x2
+u_21 = lambda x1,x2: 6*x1*x2
+u_22 = lambda x1,x2: 3*x1**2-3*x2**2
+
+ufun = array([[u_1],[u_2]])
+uder = array([[u_11,u_12],[u_21,u_22]])
+
+Colors = {'red': ((0.0, 1.0, 0.0),
+                 (1.0, 0.0, 0.0)),
+         'green': ((0.0, 0.0, 0.0),
+                   (1.0, 1.0, 1.0)),
+         'blue': ((0.0, 1.0, 1.0),
+                  (1.0, 0.0, 1.0))}
+
+
+a=fractal2D(ufun,uder)
+A=a.plot(10,-3,3,-3,3)
+my_cmap = plt.matplotlib.colors.LinearSegmentedColormap('my_colormap',Colors,256)
+plt.pcolor(A,cmap=my_cmap)
+plt.colorbar()
+plt.show() 
+
+
