@@ -15,7 +15,6 @@ class fractal2D:
         else:
             self.derivative = derivative
         self.zeroes = {'divergence':0}                                                    # Sätter upp set av rötter som fyllls på efter hand som nya rötter hittas    
-        self.root_coord = []
     def __repr__(self):
         return '{}'.format(self.function)                                       # Ger representation (ej viktigt hur det ser ut)
         
@@ -134,7 +133,7 @@ class fractal2D:
             plt.savefig('BrutalFraktal.jpg')
             print(L1, L2)
             
-    def Newton_Maxit(self,x0,Maxit=20,Tol=1.e-8):                                    # Sätter upp Newtons metod
+    def itNewton(self,x0,Maxit=20,Tol=1.e-8):                                    # Sätter upp Newtons metod
         """
         Metod för att hitta rötter i ett tvådimensionellt ekvationssystem av funktioner.
         Tar ett partal (koordinater) som argument.
@@ -165,7 +164,7 @@ class fractal2D:
         else:
             return Maxit
                
-    def plot(self, N, a, b, c, d):
+    def itplot(self, N, a, b, c, d):
             x=linspace(a,b,N)
             y=linspace(c,d,N)
             X,Y=meshgrid(x,y)
@@ -173,7 +172,7 @@ class fractal2D:
             tol=10*sqrt((b-a)**2+(d-c)**2)/N
             for i in range(N):
                 for j in range(N):
-                    A[i,j]=self.Newton_Maxit((X[i,j],Y[i,j]))
+                    A[i,j]=self.itNewton((X[i,j],Y[i,j]))
 
             plt.pcolor(A,cmap='jet')
             plt.colorbar()
