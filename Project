@@ -23,7 +23,7 @@ class fractal2D:
         
        
     
-    def Newton(self,x0,Maxit=20,Tol=1.e-8,Round=5):                                      # Sätter upp Newtons metod
+    def Newton(self,x0,Maxit=20,Tol=1.e-8, Round=5):                                    # Sätter upp Newtons metod
         """
         Metod för att hitta rötter i ett tvådimensionellt ekvationssystem av funktioner.
         Tar ett partal (koordinater) som argument.
@@ -53,14 +53,15 @@ class fractal2D:
                 x.shape=(2,)
                 (x[0], x[1]) = (round(x[0],Round),round(x[1],Round))            # Avrundar koordinaterna för att kunna jämföra med kända rötter (då Newtons metod är en numerisk process och varje ny uppsättning av koordinater kommer ge nytt fel)
                 if '{},{}'.format(x[0],x[1]) not in self.zeroes.keys():                          # Kollar om ny rot har hittats
-                   self.zeroes['{},{}'.format(x[0],x[1])] = len(self.zeroes)                             # Lägger till i kända rötter om ny   
+                   self.zeroes['{},{}'.format(x[0],x[1])] = len(self.zeroes)                             # Lägger till i kända rötter om ny
+                      
                         
                 return self.zeroes['{},{}'.format(x[0],x[1])]                                                  # Ger oss tillbaka nyckeln för hittad rot
         else:
             return self.zeroes['divergence']                                                 # Ger tillbaka divergence-nyckeln
 
         
-    def simNewton(self,x0,Maxit=20,Tol=1.e-8,Round=5):
+    def simNewton(self,x0,Maxit=20,Tol=1.e-8):
         """
         Newtons metod där den Jacobianska matrisen endast beräknas en gång.
         För användning i områden nära känd rot.
@@ -92,21 +93,25 @@ class fractal2D:
             
             if val<=Tol:
                 x.shape=(2,)
-                (x[0], x[1]) = (round(x[0],Round),round(x[1],Round)) 
+                (x[0], x[1]) = (round(x[0],5),round(x[1],5)) 
                 return self.zeroes['{},{}'.format(x[0],x[1])] 
         else:
             return self.zeroes['divergence']
             
         
-    def plot(self, N, a, b, c, d, Maxit=20, Tol=1.e-8, Round=5):
+    def plot(self, N, a, b, c, d, Maxit=20, Round=5, Simplified=False):
             x=linspace(a,b,N)
             y=linspace(c,d,N)
             X,Y=meshgrid(x,y)
             A=zeros((N,N))
-            for i in range(N):
-                for j in range(N):
+            if Simplified is False:
+                for i in range(N):
+                    for j in range(N):
                     A[i,j]=self.Newton((X[i,j],Y[i,j]))
-
+            else: 
+                for i in range(N):
+                    for j in range(N):
+                    A[i,j]=self.simNewton((X[i,j],Y[i,j]))
             plt.xlabel('x', fontsize=18,color ='C2')
             plt.ylabel('y', fontsize=16,color = 'C2',rotation = 0)
             plt.pcolor(A,cmap='jet')
@@ -124,6 +129,7 @@ class fractal2D:
             ax.set_yticklabels(L2)
             plt.show()
             plt.savefig('BrutalFraktal.jpg')
+            
             
     def itNewton(self,x0,Maxit=20,Tol=1.e-8):                                    # Sätter upp Newtons metod
         """
@@ -155,8 +161,8 @@ class fractal2D:
                 return n                                                        # Ger oss tillbaka antalet iterationer för att hitta roten för koordinaterna
         else:
             return Maxit
-
-    def itplot(self, N, a, b, c, d, Maxit=20, Tol=1.e-8, Round=5):
+               
+    def itplot(self, N, a, b, c, d, Maxit =20, Tol=1.e-8,Round=5):
             x=linspace(a,b,N)
             y=linspace(c,d,N)
             X,Y=meshgrid(x,y)
@@ -170,7 +176,8 @@ class fractal2D:
             plt.show() 
 
 
-         
+#a.plot(100,-1,1,-1,1) #Exempel på resolution och interval på axlar vi använde.
+
 u_1 = lambda x1,x2: x1**3-3*x1*x2**2-1
 u_2 = lambda x1,x2: 3*x1**2*x2-x2**3
 
