@@ -133,9 +133,51 @@ class fractal2D:
             plt.show()
             plt.savefig('BrutalFraktal.jpg')
             print(L1, L2)
-
             
+    def Newton_Maxit(self,x0,Maxit=20,Tol=1.e-8):                                    # Sätter upp Newtons metod
+        """
+        Metod för att hitta rötter i ett tvådimensionellt ekvationssystem av funktioner.
+        Tar ett partal (koordinater) som argument.
+        """
+        if (x0[0],x0[1]) == (0,0):
+            return self.zeroes['divergence']
+        if isinstance(x0,(list,tuple)):                                         
+            x0=array(x0)
+        x0.shape=(2,1)                                                          # De tre första raderna ser till så att vårt par av tal kommer i rätt form för funktionen oavsett i vilken form det kommer (list, tuple, eller array, samt rätt form för array)
+        f_1, f_2 = self.function[0,0], self.function[1,0]                       # Ger namn till funktionerna för användning
+        fd_11, fd_12, fd_21, fd_22 = self.derivative[0,0], self.derivative[0,1], self.derivative[1,0], self.derivative[1,1]         # Samma för de partiella derivatorna
+        for n in range(Maxit):
+            x1, x2 = x0[0], x0[1]                                               # Gör de givna koordinaterna till egna variabler
+            J = array([[fd_11(x1,x2),fd_12(x1,x2)],[fd_21(x1,x2),fd_22(x1,x2)]])        # Ger den Jacobianska matrisen för funktionen utvärderat i koordinaterna
+            J.shape=(2,2)                                                       # Ger matrisen rätt form (varför behövs det?)
+            Jinv = solve(J,eye(2,2))                                            # Hittar inversen
+            
+            f = array([[f_1(x1,x2)],[f_2(x1,x2)]])                              # Skapar en matris av koordinaterna utvärderade i funktionerna
+            f.shape = (2,1)                                                     # Ger matrisen rätt form (varför behövs det?)
+            
+            val = abs(f_1(x1,x2))+abs(f_2(x1,x2))                               # Utvärderar koordinaterna i funktionen för senare jämförelse
+            
+            x = x0 - dot(Jinv,f)                                                
+            x0 = x                                                              # Ger värde på koordinater närmre rot enligt Newtons metod
+            
+            if val<=Tol:                                                        # Kollar om de nya koordinaterna är godtyckligt nära roten
+                return n                                                 # Ger oss tillbaka värdet på koordinater för hittad rot
+        else:
+            return Maxit
+               
+    def plot(self, N, a, b, c, d):
+            x=linspace(a,b,N)
+            y=linspace(c,d,N)
+            X,Y=meshgrid(x,y)
+            A=zeros((N,N))
+            tol=10*sqrt((b-a)**2+(d-c)**2)/N
+            for i in range(N):
+                for j in range(N):
+                    A[i,j]=self.Newton_Maxit((X[i,j],Y[i,j]))
 
+            plt.pcolor(A,cmap='jet')
+            plt.colorbar()
+            plt.show() 
 
 
          
