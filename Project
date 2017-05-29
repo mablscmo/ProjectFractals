@@ -1,8 +1,11 @@
-
 """
 Our code for the project fractals in NUMA01
 edit
 """
+from scipy import *
+from pylab import *
+from matplotlib.pyplot import *
+
 class fractal2D:
     
     def __init__(self,function, derivative=None):                               # Sätter upp klassen med två stycken funktioner (polynom i vårt fall) beroende på två variabler, och de fyra resulterande partiella derivatorna
@@ -20,7 +23,7 @@ class fractal2D:
         
        
     
-    def Newton(self,x0,Maxit=20,Tol=1.e-8):                                    # Sätter upp Newtons metod
+    def Newton(self,x0,Maxit=20,Tol=1.e-8,Round=5):                                      # Sätter upp Newtons metod
         """
         Metod för att hitta rötter i ett tvådimensionellt ekvationssystem av funktioner.
         Tar ett partal (koordinater) som argument.
@@ -48,17 +51,16 @@ class fractal2D:
             
             if val<=Tol:                                                        # Kollar om de nya koordinaterna är godtyckligt nära roten
                 x.shape=(2,)
-                (x[0], x[1]) = (round(x[0],5),round(x[1],5))            # Avrundar koordinaterna för att kunna jämföra med kända rötter (då Newtons metod är en numerisk process och varje ny uppsättning av koordinater kommer ge nytt fel)
+                (x[0], x[1]) = (round(x[0],Round),round(x[1],Round))            # Avrundar koordinaterna för att kunna jämföra med kända rötter (då Newtons metod är en numerisk process och varje ny uppsättning av koordinater kommer ge nytt fel)
                 if '{},{}'.format(x[0],x[1]) not in self.zeroes.keys():                          # Kollar om ny rot har hittats
-                   self.zeroes['{},{}'.format(x[0],x[1])] = len(self.zeroes)                             # Lägger till i kända rötter om ny
-                      
+                   self.zeroes['{},{}'.format(x[0],x[1])] = len(self.zeroes)                             # Lägger till i kända rötter om ny   
                         
                 return self.zeroes['{},{}'.format(x[0],x[1])]                                                  # Ger oss tillbaka nyckeln för hittad rot
         else:
             return self.zeroes['divergence']                                                 # Ger tillbaka divergence-nyckeln
 
         
-    def simNewton(self,x0,Maxit=20,Tol=1.e-8):
+    def simNewton(self,x0,Maxit=20,Tol=1.e-8,Round=5):
         """
         Newtons metod där den Jacobianska matrisen endast beräknas en gång.
         För användning i områden nära känd rot.
@@ -90,18 +92,17 @@ class fractal2D:
             
             if val<=Tol:
                 x.shape=(2,)
-                (x[0], x[1]) = (round(x[0],5),round(x[1],5)) 
+                (x[0], x[1]) = (round(x[0],Round),round(x[1],Round)) 
                 return self.zeroes['{},{}'.format(x[0],x[1])] 
         else:
             return self.zeroes['divergence']
             
         
-    def plot(self, N, a, b, c, d):
+    def plot(self, N, a, b, c, d, Maxit=20, Tol=1.e-8, Round=5):
             x=linspace(a,b,N)
             y=linspace(c,d,N)
             X,Y=meshgrid(x,y)
             A=zeros((N,N))
-            tol=10*sqrt((b-a)**2+(d-c)**2)/N
             for i in range(N):
                 for j in range(N):
                     A[i,j]=self.Newton((X[i,j],Y[i,j]))
@@ -123,11 +124,11 @@ class fractal2D:
             ax.set_yticklabels(L2)
             plt.show()
             plt.savefig('BrutalFraktal.jpg')
-            print(L1, L2)
             
-    def itNewton(self,x0,Maxit=20,Tol=1.e-8):                                    
+    def itNewton(self,x0,Maxit=20,Tol=1.e-8):                                    # Sätter upp Newtons metod
         """
-        Vil nogen skrive noget? :D
+        Metod för att hitta rötter i ett tvådimensionellt ekvationssystem av funktioner.
+        Tar ett partal (koordinater) som argument.
         """
         if (x0[0],x0[1]) == (0,0):
             return self.zeroes['divergence']
@@ -154,16 +155,15 @@ class fractal2D:
                 return n                                                        # Ger oss tillbaka antalet iterationer för att hitta roten för koordinaterna
         else:
             return Maxit
-               
-    def itplot(self, N, a, b, c, d):
+
+    def itplot(self, N, a, b, c, d, Maxit=20, Tol=1.e-8, Round=5):
             x=linspace(a,b,N)
             y=linspace(c,d,N)
             X,Y=meshgrid(x,y)
             A=zeros((N,N))
-            tol=10*sqrt((b-a)**2+(d-c)**2)/N
             for i in range(N):
                 for j in range(N):
-                    A[i,j]=self.itNewton((X[i,j],Y[i,j]))
+                    A[i,j]=self.itNewton((X[i,j],Y[i,j]), Maxit, Tol)
 
             plt.pcolor(A,cmap='jet')
             plt.colorbar()
