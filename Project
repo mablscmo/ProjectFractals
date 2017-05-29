@@ -51,7 +51,7 @@ class fractal2D:
                 (x[0], x[1]) = (round(x[0],5),round(x[1],5))            # Avrundar koordinaterna för att kunna jämföra med kända rötter (då Newtons metod är en numerisk process och varje ny uppsättning av koordinater kommer ge nytt fel)
                 if '{},{}'.format(x[0],x[1]) not in self.zeroes.keys():                          # Kollar om ny rot har hittats
                    self.zeroes['{},{}'.format(x[0],x[1])] = len(self.zeroes)                             # Lägger till i kända rötter om ny
-                   self.root_coord.append((x0[0], x0[1]))     
+                      
                         
                 return self.zeroes['{},{}'.format(x[0],x[1])]                                                  # Ger oss tillbaka nyckeln för hittad rot
         else:
