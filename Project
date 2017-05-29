@@ -125,10 +125,9 @@ class fractal2D:
             plt.savefig('BrutalFraktal.jpg')
             print(L1, L2)
             
-    def itNewton(self,x0,Maxit=20,Tol=1.e-8):                                    # Sätter upp Newtons metod
+    def itNewton(self,x0,Maxit=20,Tol=1.e-8):                                    
         """
-        Metod för att hitta rötter i ett tvådimensionellt ekvationssystem av funktioner.
-        Tar ett partal (koordinater) som argument.
+        Vil nogen skrive noget? :D
         """
         if (x0[0],x0[1]) == (0,0):
             return self.zeroes['divergence']
