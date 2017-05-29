@@ -18,15 +18,7 @@ class fractal2D:
     def __repr__(self):
         return '{}'.format(self.function)                                       # Ger representation (ej viktigt hur det ser ut)
         
-        
-    
-    def root_dist(self,x,y):
-        if len(self.root_coord)==0:
-            return array((10000))
-        dists=zeros(len(self.root_coord),)
-        for i in range(len(self.root_coord)):
-            dists[i]=sqrt((x-self.root_coord[i][0])**2+(y-self.root_coord[i][1])**2)
-        return dists
+       
     
     def Newton(self,x0,Maxit=20,Tol=1.e-8):                                    # Sätter upp Newtons metod
         """
@@ -61,9 +53,9 @@ class fractal2D:
                    self.zeroes['{},{}'.format(x[0],x[1])] = len(self.zeroes)                             # Lägger till i kända rötter om ny
                    self.root_coord.append((x0[0], x0[1]))     
                         
-                return self.zeroes['{},{}'.format(x[0],x[1])]                                                  # Ger oss tillbaka värdet på koordinater för hittad rot
+                return self.zeroes['{},{}'.format(x[0],x[1])]                                                  # Ger oss tillbaka nyckeln för hittad rot
         else:
-            return self.zeroes['divergence']                                                 # Placeholder tills vidare för att Newtons metod inte konvergerade mot någon rot med de parametrar som getts
+            return self.zeroes['divergence']                                                 # Ger tillbaka divergence-nyckeln
 
         
     def simNewton(self,x0,Maxit=20,Tol=1.e-8):
@@ -160,7 +152,7 @@ class fractal2D:
             x0 = x                                                              # Ger värde på koordinater närmre rot enligt Newtons metod
             
             if val<=Tol:                                                        # Kollar om de nya koordinaterna är godtyckligt nära roten
-                return n                                                 # Ger oss tillbaka värdet på koordinater för hittad rot
+                return n                                                        # Ger oss tillbaka antalet iterationer för att hitta roten för koordinaterna
         else:
             return Maxit
                
